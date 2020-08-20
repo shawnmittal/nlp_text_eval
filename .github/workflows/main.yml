@@ -20,7 +20,7 @@ jobs:
     - name: install dependencies
       run: |
         pip3 install -r requirements.txt
-        python3 ./webapp/nltk_downloader
+        python3 ./webapp/nltk_downloader.py
     - name: run
       run: |
         export FLASK_APP=webapp/app
