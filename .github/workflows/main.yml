@@ -13,20 +13,14 @@ jobs:
     steps:
     - name: checkout
       uses: actions/checkout@v2
-    - name: python setup for unittest with nltk
+      # not using standard actions/python@v2. causes dependency problems with some packages
+    - name: install python and dependencies
       run: |
         sudo apt-get update
         sudo apt-get install python3.7 python3-pip
         sudo rm /usr/bin/python
         sudo ln -s /usr/bin/python3.7 /usr/bin/python
-    - name: install dependencies
-      run: |
-        python3 -m pip install --upgrade pip
-        pip3 install setuptools
-        pip3 install wheel
-        pip3 install -r requirements.txt
-        sudo python3 ./webapp/nltk_downloader.py
-    - name: lint with flake8
+    - name: run linter for python code
       run: |
         pip3 install flake8
         sudo apt-get install flake8
@@ -34,9 +28,9 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistic
-    - name: run flask application
-      run: |
-        export FLASK_APP=webapp/app
-        flask run & sleep 5
-    - name: test
+    - name: build docker container
+      run: docker build -t nlpapi:test .
+    - name: run docker container
+      run: docker run -p 5000:5000 nlpapi:test
+    - name: run unittests
       run: python3 ./tests/test_request.py
