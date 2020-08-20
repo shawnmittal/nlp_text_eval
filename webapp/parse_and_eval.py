@@ -2,8 +2,6 @@ import nltk
 from newspaper import Article
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-nltk.data.path.insert(0, '/usr/local/share/nltk_data')
-
 
 def get_and_parse(url):
     article = Article(url)

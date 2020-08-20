@@ -11,5 +11,5 @@ COPY . /webapp
 
 COPY requirements.txt / 
 RUN pip install --upgrade pip
+RUN mv ./webapp/nltk_data /usr/local/share/nltk_data
 RUN pip3 install --no-cache-dir -r /requirements.txt
-RUN python3 ./webapp/nltk_downloader.py
