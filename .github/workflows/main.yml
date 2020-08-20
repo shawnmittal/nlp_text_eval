@@ -18,9 +18,12 @@ jobs:
       with:
         python-version: 3.7
     - name: install dependencies
-      run: pip3 install -r requirements.txt
-    - name: run and test
       run: |
-        export FLASK_APP = webapp/app
+        pip3 install -r requirements.txt
+        python3 ./webapp/nltk_downloader
+    - name: run
+      run: |
+        export FLASK_APP=webapp/app
         flask run & sleep 5
-        python3 ./tests/test_request.py
+    - name: test
+      run: python3 ./tests/test_request.py
