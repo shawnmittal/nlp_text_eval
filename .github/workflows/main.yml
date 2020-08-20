@@ -31,6 +31,6 @@ jobs:
     - name: build docker container
       run: docker build -t nlpapi:test .
     - name: run docker container
-      run: docker run -p -d 5000:5000 nlpapi:test
+      run: docker run -d -p 5000:5000 nlpapi:test
     - name: run unittests
       run: python3 ./tests/test_request.py
