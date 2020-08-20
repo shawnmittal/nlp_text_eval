@@ -13,16 +13,27 @@ jobs:
     steps:
     - name: checkout
       uses: actions/checkout@v2
-    - name: python setup
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.7
+    - name: python setup for unittest with nltk
+      run: |
+        sudo apt-get update
+        sudo apt-get install python3.7 python3-pip
+        sudo rm /usr/bin/python
+        sudo ln -s /usr/bin/python3.7 /usr/bin/python
     - name: install dependencies
       run: |
+        python3 -m pip install --upgrade pip
         pip3 install wheel
         pip3 install -r requirements.txt
         sudo python3 ./webapp/nltk_downloader.py
-    - name: run
+    - name: lint with flake8
+      run: |
+        pip3 install flake8
+        sudo apt-get install flake8
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistic
+    - name: run flask application
       run: |
         export FLASK_APP=webapp/app
         flask run & sleep 5
