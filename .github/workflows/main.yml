@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+    - name: python setup
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+    - name: install dependencies
+      run: pip3 install -r requirements.txt
+    - name: run and test
+      run: |
+        export FLASK_APP = webapp/app
+        flask run & sleep 5
+        python3 ./tests/test_request.py
