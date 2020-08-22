@@ -32,5 +32,9 @@ jobs:
       run: docker build -t nlpapi:test .
     - name: run docker container
       run: docker run -d -p 5000:5000 nlpapi:test
+    - name: sleep for 10 seconds
+      uses: jakejarvis/wait-action@master
+        with:
+          time: '10s'
     - name: run unittests
       run: python3 ./tests/test_request.py
