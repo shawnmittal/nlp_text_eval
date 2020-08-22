@@ -1,8 +1,8 @@
 FROM tiangolo/uwsgi-nginx-flask:python3.7
+RUN apt remove --purge imagemagick
 
 ENV LISTEN_PORT=5000
 EXPOSE 5000
-
 ENV UWSGI_INI uwsgi.ini
 
 WORKDIR /webapp
