@@ -3,37 +3,34 @@ import requests
 import json
 
 
-class TestValidUrl(unittest.TestCase):
-    def test_request_response(self):
+class TestUrlPost(unittest.TestCase):
+    def setUp(self):
         self.url = "http://localhost:5000/url_eval"
-        self.request_url = "https://www.cnn.com/2020/08/17/us/coronavirus-college-university/index.html"
+        self.valid_request_url = "https://www.cnn.com/2020/08/17/us/coronavirus-college-university/index.html"
+        self.invalid_request_url = "http://www.notrealurl.com/this-is-a-fake-url"
+        self.headers = {"content-type": "application/json", "Accept-Charset": "UTF-8"}
 
-        # package request into json payload
-        j_url = json.dumps(self.request_url)
-        headers = {"content-type": "application/json", "Accept-Charset": "UTF-8"}
+    def post_request(self, url, data, headers):
+        r = requests.post(
+            url, data=data, headers=headers
+        )
+        response_json = json.loads(r.text)
 
-        # get request
-        r = requests.post(self.url, data=j_url, headers=headers)
-        r_json = json.loads(r.text)
+        self.assertEqual(
+            r.status_code,
+            200,
+            f"Docker HTTP response not 200:\n{r.status_code}",
+        )
+        self.assertTrue(
+            len(response_json["keywords"]) > 0,
+            f"summary does not contain enough data:\n{response_json['keywords']}",
+        )
+    
+    def test_valid_request(self):
+        self.post_request(self.url, self.valid_request_url, self.headers)
 
-        # tests
-        self.assertEqual(r.status_code, 200, f"Docker HTTP response not 200:\n{r.status_code}")
-        self.assertTrue(len(r_json['keywords']) > 0, f"summary does not contain enough data:\n{r_json['keywords']}")
-
-class TestInvalidUrl(unittest.TestCase):
-    def test_request_response(self):
-        self.url = "http://localhost:5000/url_eval"
-        self.request_url = "http://www.notrealurl.com/this-is-a-fake-url"
-
-        j_url = json.dumps(self.request_url)
-        headers = {"content-type": "application/json", "Accept-Charset": "UTF-8"}
-
-        r = requests.post(self.url, data=j_url, headers=headers)
-        r_json = json.loads(r.text)
-
-        self.assertEqual(r.status_code, 200, f"Docker HTTP response not 200:\n{r.status_code}")
-        self.assertTrue(len(r_json['keywords']) < 1, f"Response text not empty:\n{r.text}")
-
+    def test_invalid_reqeust(self):
+        self.post_request(self.url, self.invalid_request_url, self.headers)
 
 if __name__ == "__main__":
     unittest.main()
