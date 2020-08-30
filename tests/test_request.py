@@ -12,7 +12,7 @@ class TestUrlPost(unittest.TestCase):
 
     def post_request(self, url, data, headers):
         r = requests.post(
-            url, data=data, headers=headers
+            url, data=json.dumps(data), headers=headers
         )
         response_json = json.loads(r.text)
 
