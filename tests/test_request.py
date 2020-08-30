@@ -6,13 +6,13 @@ import json
 class TestUrlPost(unittest.TestCase):
     def setUp(self):
         self.url = "http://localhost:5000/url_eval"
-        self.valid_request_url = "https://www.cnn.com/2020/08/17/us/coronavirus-college-university/index.html"
-        self.invalid_request_url = "http://www.notrealurl.com/this-is-a-fake-url"
+        self.valid_request_url = json.dumps("https://www.cnn.com/2020/08/17/us/coronavirus-college-university/index.html")
+        self.invalid_request_url = json.dumps("http://www.notrealurl.com/this-is-a-fake-url")
         self.headers = {"content-type": "application/json", "Accept-Charset": "UTF-8"}
 
     def post_request(self, url, data, headers):
         r = requests.post(
-            url, data=json.dumps(data), headers=headers
+            url, data=data, headers=headers
         )
         response_json = json.loads(r.text)
 
